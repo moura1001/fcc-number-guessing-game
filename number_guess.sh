@@ -47,22 +47,25 @@ PLAY() {
   USER_GUESS=0
   while [[ $USER_GUESS != $MAGIC_NUMBER ]]
   do
-    USER_GUESS=$(GET_USER_GUESS)
+    
+    # get user guess
+    read USER_GUESS  
+    while [[ ! $USER_GUESS =~ ^[0-9]+$ ]]
+    do
+      echo "That is not an integer, guess again:"
+      read USER_GUESS
+    done
+    
     (( ATUAL_GUESSING_ATTEMPTS++ ))
-    echo "New user input: $USER_GUESS, attempt $ATUAL_GUESSING_ATTEMPTS"
+    
+    if [[ $USER_GUESS -gt $MAGIC_NUMBER ]]
+    then
+      echo "It's lower than that, guess again:"
+    elif [[ $USER_GUESS -lt $MAGIC_NUMBER ]]
+    then
+      echo "It's higher than that, guess again:"
+    fi
   done
-}
-
-GET_USER_GUESS() {
-  read USER_INPUT
-  
-  while [[ -z $USER_INPUT || ! $USER_INPUT =~ ^[0-9]+$ ]]
-  do
-    echo "That is not an integer, guess again:"
-    read USER_INPUT
-  done
-
-  echo $USER_INPUT
 }
 
 echo "Enter your username:"
