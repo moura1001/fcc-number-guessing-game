@@ -3,7 +3,7 @@
 PSQL="psql -X --username=freecodecamp --dbname=number_guess --tuples-only -c"
 # generates a random number between 1 and 1000
 MAGIC_NUMBER=$(( RANDOM % 1000 + 1 ))
-echo "secret number: $MAGIC_NUMBER"
+#echo "secret number: $MAGIC_NUMBER"
 ATUAL_GUESSING_ATTEMPTS=0
 IS_FIRST_GAME=false
 # max integer value
@@ -66,6 +66,14 @@ PLAY() {
       echo "It's higher than that, guess again:"
     fi
   done
+
+  # update player results if new fewest number of guesses
+  if [[ $ATUAL_GUESSING_ATTEMPTS -lt $2 ]]
+  then
+    UPDATE_GAME_RESULT=$($PSQL "UPDATE games SET games_played=games_played+1, best_game=$ATUAL_GUESSING_ATTEMPTS WHERE username='$1'")
+  fi
+
+  echo "You guessed it in $ATUAL_GUESSING_ATTEMPTS tries. The secret number was $MAGIC_NUMBER. Nice job!"
 }
 
 echo "Enter your username:"
